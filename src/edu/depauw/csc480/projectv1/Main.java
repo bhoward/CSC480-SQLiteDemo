@@ -2,15 +2,12 @@ package edu.depauw.csc480.projectv1;
 
 import java.io.PrintStream;
 import java.sql.Connection;
-import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 import java.util.Scanner;
-
-import org.apache.derby.jdbc.EmbeddedDriver;
 
 /**
  * This is an example of a menu-driven client for Sciore's student database. It
@@ -23,7 +20,8 @@ public class Main {
 	private static final PrintStream out = System.out;
 
 	public static void main(String[] args) {
-		try (Connection conn = getConnection("jdbc:derby:db/studentdb")) {
+		try (Connection conn = DriverManager.getConnection("jdbc:sqlite:db/student.db")) {
+			createTables(conn);
 			displayMenu();
 			loop: while (true) {
 				switch (requestString("Selection (0 to quit, 9 for menu)? ")) {
@@ -69,35 +67,6 @@ public class Main {
 		out.println("Done");
 	}
 
-	/**
-	 * Attempt to open a connection to an embedded Derby database at the given URL.
-	 * If the database does not exist, create it with empty tables.
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private static Connection getConnection(String url) {
-		Driver driver = new EmbeddedDriver();
-
-		// try to connect to an existing database
-		Properties prop = new Properties();
-		prop.put("create", "false");
-		try {
-			Connection conn = driver.connect(url, prop);
-			return conn;
-		} catch (SQLException e) {
-			// database doesn't exist, so try creating it
-			try {
-				prop.put("create", "true");
-				Connection conn = driver.connect(url, prop);
-				createTables(conn);
-				return conn;
-			} catch (SQLException e2) {
-				throw new RuntimeException("cannot connect to database", e2);
-			}
-		}
-	}
-
 	private static void displayMenu() {
 		out.println("0: Quit");
 		out.println("1: Reset tables");
@@ -116,9 +85,6 @@ public class Main {
 	}
 
 	private static void createTables(Connection conn) {
-		// First clean up from previous runs, if any
-		dropTables(conn);
-
 		// Now create the schema
 		addTables(conn);
 	}
@@ -129,15 +95,6 @@ public class Main {
 			System.out.println(message);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-	}
-
-	private static void doUpdateNoError(Connection conn, String statement, String message) {
-		try (Statement stmt = conn.createStatement()) {
-			stmt.executeUpdate(statement);
-			System.out.println(message);
-		} catch (SQLException e) {
-			// Ignore error
 		}
 	}
 
@@ -152,7 +109,7 @@ public class Main {
 	 */
 	private static void addTables(Connection conn) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table DEPT(");
+		sb.append("create table if not exists DEPT(");
 		sb.append("  DId int,");
 		sb.append("  DName varchar(8) not null,");
 		sb.append("  primary key (DId)");
@@ -160,7 +117,7 @@ public class Main {
 		doUpdate(conn, sb.toString(), "Table DEPT created.");
 
 		sb = new StringBuilder();
-		sb.append("create table STUDENT(");
+		sb.append("create table if not exists STUDENT(");
 		sb.append("  SId int,");
 		sb.append("  SName varchar(10) not null,");
 		sb.append("  MajorId int,");
@@ -171,7 +128,7 @@ public class Main {
 		doUpdate(conn, sb.toString(), "Table STUDENT created.");
 
 		sb = new StringBuilder();
-		sb.append("create table COURSE(");
+		sb.append("create table if not exists COURSE(");
 		sb.append("  CId int,");
 		sb.append("  Title varchar(20) not null,");
 		sb.append("  DeptId int not null,");
@@ -181,7 +138,7 @@ public class Main {
 		doUpdate(conn, sb.toString(), "Table COURSE created.");
 
 		sb = new StringBuilder();
-		sb.append("create table SECTION(");
+		sb.append("create table if not exists SECTION(");
 		sb.append("  SectId int,");
 		sb.append("  CourseId int not null,");
 		sb.append("  Prof varchar(8) not null,");
@@ -192,7 +149,7 @@ public class Main {
 		doUpdate(conn, sb.toString(), "Table SECTION created.");
 
 		sb = new StringBuilder();
-		sb.append("create table ENROLL(");
+		sb.append("create table if not exists ENROLL(");
 		sb.append("  EId int,");
 		sb.append("  StudentId int not null,");
 		sb.append("  SectionId int not null,");
@@ -202,21 +159,6 @@ public class Main {
 		sb.append("  foreign key (SectionId) references SECTION on delete no action");
 		sb.append(")");
 		doUpdate(conn, sb.toString(), "Table ENROLL created.");
-	}
-
-	/**
-	 * Delete the tables for the student database. Note that the tables are dropped
-	 * in the reverse order that they were created, to satisfy referential integrity
-	 * (foreign key) constraints.
-	 * 
-	 * @param conn
-	 */
-	private static void dropTables(Connection conn) {
-		doUpdateNoError(conn, "drop table ENROLL", "Table ENROLL dropped.");
-		doUpdateNoError(conn, "drop table SECTION", "Table SECTION dropped.");
-		doUpdateNoError(conn, "drop table COURSE", "Table COURSE dropped.");
-		doUpdateNoError(conn, "drop table STUDENT", "Table STUDENT dropped.");
-		doUpdateNoError(conn, "drop table DEPT", "Table DEPT dropped.");
 	}
 
 	/**

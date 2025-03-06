@@ -39,7 +39,7 @@ public class CourseDAO {
 	 */
 	public static void create(Connection conn) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table COURSE(");
+		sb.append("create table if not exists COURSE(");
 		sb.append("  CId int,");
 		sb.append("  Title varchar(20) not null,");
 		sb.append("  DeptId int not null,");

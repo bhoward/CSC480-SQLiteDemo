@@ -34,7 +34,7 @@ public class EnrollDAO {
 	 */
 	public static void create(Connection conn) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table ENROLL(");
+		sb.append("create table if not exists ENROLL(");
 		sb.append("  EId int,");
 		sb.append("  StudentId int not null,");
 		sb.append("  SectionId int not null,");

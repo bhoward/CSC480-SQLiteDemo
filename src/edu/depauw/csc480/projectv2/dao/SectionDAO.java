@@ -35,7 +35,7 @@ public class SectionDAO {
 	 */
 	public static void create(Connection conn) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table SECTION(");
+		sb.append("create table if not exists SECTION(");
 		sb.append("  SectId int,");
 		sb.append("  CourseId int not null,");
 		sb.append("  Prof varchar(8) not null,");

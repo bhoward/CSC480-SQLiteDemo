@@ -1,12 +1,9 @@
 package edu.depauw.csc480.projectv2.dao;
 
 import java.sql.Connection;
-import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Properties;
-
-import org.apache.derby.jdbc.EmbeddedDriver;
 
 import edu.depauw.csc480.projectv2.model.Course;
 import edu.depauw.csc480.projectv2.model.Dept;
@@ -21,7 +18,6 @@ import edu.depauw.csc480.projectv2.model.Student;
  * @author bhoward
  */
 public class DatabaseManager {
-	private Driver driver;
 	private Connection conn;
 	private DeptDAO deptDAO;
 	private StudentDAO studentDAO;
@@ -29,28 +25,15 @@ public class DatabaseManager {
 	private SectionDAO sectionDAO;
 	private EnrollDAO enrollDAO;
 
-	private final String url = "jdbc:derby:db/studentdb";
+	private final String url = "jdbc:sqlite:db/student.db";
 
 	public DatabaseManager() {
-		driver = new EmbeddedDriver();
-
-		Properties prop = new Properties();
-		prop.put("create", "false");
-
-		// try to connect to an existing database
 		try {
-			conn = driver.connect(url, prop);
+			conn = DriverManager.getConnection(url);
 			conn.setAutoCommit(false);
+			create(conn);
 		} catch (SQLException e) {
-			// database doesn't exist, so try creating it
-			try {
-				prop.put("create", "true");
-				conn = driver.connect(url, prop);
-				conn.setAutoCommit(false);
-				create(conn);
-			} catch (SQLException e2) {
-				throw new RuntimeException("cannot connect to database", e2);
-			}
+			throw new RuntimeException("cannot connect to database", e);
 		}
 
 		deptDAO = new DeptDAO(conn, this);
@@ -178,16 +161,6 @@ public class DatabaseManager {
 			conn.close();
 		} catch (SQLException e) {
 			throw new RuntimeException("cannot close database connection", e);
-		}
-
-		// Now shutdown the embedded database system -- this is Derby-specific
-		try {
-			Properties prop = new Properties();
-			prop.put("shutdown", "true");
-			conn = driver.connect(url, prop);
-		} catch (SQLException e) {
-			// This is supposed to throw an exception...
-			System.out.println("Derby has shut down successfully");
 		}
 	}
 

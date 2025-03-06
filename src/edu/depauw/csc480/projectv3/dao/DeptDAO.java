@@ -39,7 +39,7 @@ public class DeptDAO {
 	 */
 	public static void create(Connection conn) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table DEPT(");
+		sb.append("create table if not exists DEPT(");
 		sb.append("  DId int,");
 		sb.append("  DName varchar(8) not null,");
 		sb.append("  primary key (DId)");

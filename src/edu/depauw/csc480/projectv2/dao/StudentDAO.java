@@ -36,7 +36,7 @@ public class StudentDAO {
 	 */
 	public static void create(Connection conn) throws SQLException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("create table STUDENT(");
+		sb.append("create table if not exists STUDENT(");
 		sb.append("  SId int,");
 		sb.append("  SName varchar(10) not null,");
 		sb.append("  MajorId int,");

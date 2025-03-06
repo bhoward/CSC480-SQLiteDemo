@@ -10,8 +10,11 @@
 		<class>edu.depauw.csc480.projectv4.model.Student</class>
 		
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:derby:db/studentdb;create=true" />
-			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlite:db/student.db" />
+			<property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+			
+			<!-- this tells OpenJPA to use the correct SQLite syntax for DELETE -->
+			<property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.DBDictionary(AllowsAliasInBulkClause=false)" />
 			
 			<!-- this tells OpenJPA to automatically manage both sides of a relationship -->
 			<property name="openjpa.InverseManager" value="true" />

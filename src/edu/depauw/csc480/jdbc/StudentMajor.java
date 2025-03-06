@@ -1,17 +1,13 @@
 package edu.depauw.csc480.jdbc;
 
 import java.sql.*;
-import org.apache.derby.jdbc.EmbeddedDriver;
 
 public class StudentMajor {
 	public static void main(String[] args) {
-		String url = "jdbc:derby:db/studentdb";
-		String qry = "select SName, DName "
-				+ "from DEPT, STUDENT "
-				+ "where MajorId = DId";
+		String url = "jdbc:sqlite:db/student.db";
+		String qry = "select SName, DName from DEPT, STUDENT where MajorId = DId";
 
-		Driver d = new EmbeddedDriver();
-		try (Connection conn = d.connect(url, null);
+		try (Connection conn = DriverManager.getConnection(url);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(qry)) {
 			System.out.println("Name\tMajor");
