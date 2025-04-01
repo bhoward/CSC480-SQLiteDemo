@@ -20,7 +20,9 @@ public class Main {
 	private static final PrintStream out = System.out;
 
 	public static void main(String[] args) {
-		try (Connection conn = DriverManager.getConnection("jdbc:sqlite:db/student.db")) {
+		String url = "jdbc:sqlite:db/student.db";
+		// String url = "jdbc:postgresql://localhost:5432/sciore";
+		try (Connection conn = DriverManager.getConnection(url)) {
 			createTables(conn);
 			displayMenu();
 			loop: while (true) {

@@ -5,6 +5,7 @@ import java.sql.*;
 public class StudentMajor {
 	public static void main(String[] args) {
 		String url = "jdbc:sqlite:db/student.db";
+		// String url = "jdbc:postgresql://localhost:5432/sciore";
 		String qry = "select SName, DName from DEPT, STUDENT where MajorId = DId";
 
 		try (Connection conn = DriverManager.getConnection(url);

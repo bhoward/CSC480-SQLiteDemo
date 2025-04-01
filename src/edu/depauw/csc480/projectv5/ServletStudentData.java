@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class ServletStudentData extends HttpServlet {
 	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb");
+	// private EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb-pg");
 	private EntityManager em = emf.createEntityManager();
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

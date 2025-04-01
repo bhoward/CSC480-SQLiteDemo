@@ -22,6 +22,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb");
+		// EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb-pg");
 		EntityManager em = emf.createEntityManager();
 
 		displayMenu();

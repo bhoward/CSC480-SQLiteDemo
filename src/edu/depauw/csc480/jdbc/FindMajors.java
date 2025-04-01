@@ -13,6 +13,7 @@ public class FindMajors {
 		String qry = "select sname, gradyear from student, dept where did = majorid and dname = '" + major + "'";
 
 		String url = "jdbc:sqlite:db/student.db";
+		// String url = "jdbc:postgresql://localhost:5432/sciore";
 		try (Connection conn = DriverManager.getConnection(url);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(qry)) {

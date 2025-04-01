@@ -21,6 +21,7 @@ import edu.depauw.csc480.projectv4.model.Student;
 public class JPAStudentInfo {
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb");
+		// EntityManagerFactory emf = Persistence.createEntityManagerFactory("studentdb-pg");
 		EntityManager em = emf.createEntityManager();
 		JFrame frame = new TSFrame(em);
 		frame.setVisible(true);

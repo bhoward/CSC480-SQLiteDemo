@@ -26,6 +26,7 @@ public class DatabaseManager {
 	private EnrollDAO enrollDAO;
 
 	private final String url = "jdbc:sqlite:db/student.db";
+	// private final String url = "jdbc:postgresql://localhost:5432/sciore";
 
 	public DatabaseManager() {
 		try {

@@ -5,6 +5,7 @@ import java.sql.*;
 public class CreateStudentDB {
 	public static void main(String[] args) {
 		String url = "jdbc:sqlite:db/student.db";
+		// String url = "jdbc:postgresql://localhost:5432/sciore";
 
 		try (Connection conn = DriverManager.getConnection(url)) {
 			// First clean up from previous runs, if any
